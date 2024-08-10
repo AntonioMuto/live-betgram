@@ -18,7 +18,7 @@ const uploadLiveMatches = async () => {
         liveMatches = response.data.leagues;
         liveMatches.forEach(league => {
             league.matches.forEach(async match => {
-                const response = await axios.get(`${API_URL}/matchDetails?matchId=${match.id}&${INFO}`);
+                const response = await axios.get(`${API_URL}matchDetails?matchId=${match.id}&${INFO}`);
                 matchesDetails.set(match.id, response.data);
             })
         })
