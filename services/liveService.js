@@ -1,6 +1,7 @@
 const getDb = require('../config/database').getDb;
 const { MongoClient, ObjectId } = require('mongodb');
 const dotenv = require('dotenv');
+const Luxon = require('luxon');
 const axios = require('axios');
 const API_URL = process.env.API_URL;
 const INFO = process.env.INFO;
@@ -38,8 +39,9 @@ const getLiveMatchesSaved = async (matchId) => {
 };
 
 const getFormattedDate = () => {
-    const now = DateTime.now().setZone('Europe/Rome');
+    const now = Luxon.DateTime.now().setZone('Europe/Rome');
     const formattedDate = now.toFormat('yyyyMMdd');
+    console.log(formattedDate);
     return formattedDate;
 
 };
