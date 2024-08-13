@@ -15,6 +15,7 @@ const uploadLiveMatches = async () => {
     try {
         const formattedDate = getFormattedDate();
         const response = await axios.get(`${API_URL}matches?date=${formattedDate}&timezone=Europe%2FRome&${INFO}`);
+        console.log(`${API_URL}matches?date=${formattedDate}&timezone=Europe%2FRome&${INFO}`)
         liveMatches = response.data.leagues;
         liveMatches.forEach(league => {
             league.matches.forEach(async match => {
@@ -37,11 +38,10 @@ const getLiveMatchesSaved = async (matchId) => {
 };
 
 const getFormattedDate = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return `${year}${month}${day}`;
+    const now = DateTime.now().setZone('Europe/Rome');
+    const formattedDate = now.toFormat('yyyyMMdd');
+    return formattedDate;
+
 };
 
 const debugMatchesDetails = () => {
