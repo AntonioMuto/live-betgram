@@ -7,12 +7,14 @@ const API_URL = process.env.API_URL;
 const INFO = process.env.INFO;
 
 const arrayLeagues = [55, 86, 47, 53, 54, 87, 57, 61]
+var totalRefresh = 0;
 
 var liveMatches = [];
 var matchesDetails = new Map();
 
 const uploadLiveMatches = async () => {
     try {
+        totalRefresh += 1;
         const formattedDate = getFormattedDate();
         const response = await axios.get(`${API_URL}matches?date=${formattedDate}&timezone=Europe%2FRome&${INFO}`);
         liveMatches = response.data.leagues;
@@ -21,9 +23,9 @@ const uploadLiveMatches = async () => {
         // Usare Promise.all per gestire le richieste asincrone
         await Promise.all(
             liveMatches.map(async league => {
-                // if (arrayLeagues.includes(league.id)) {
-                    await Promise.all(
-                        league.matches.map(async match => {
+                await Promise.all(
+                    league.matches.map(async match => {
+                        if (totalRefresh <= 75) {
                             if (match.status && match.status.ongoing === true) {
                                 try {
                                     const matchDetailsResponse = await axios.get(`${API_URL}matchDetails?matchId=${match.id}&${INFO}`);
@@ -33,11 +35,23 @@ const uploadLiveMatches = async () => {
                                     // Non lanciare errori qui per non fermare l'esecuzione
                                 }
                             }
-                        })
-                    );
-                // }
+                        } else {
+                            try {
+                                const matchDetailsResponse = await axios.get(`${API_URL}matchDetails?matchId=${match.id}&${INFO}`);
+                                matchesDetails.set(match.id, matchDetailsResponse.data);
+                            } catch (error) {
+                                console.error(`Errore nel recupero dei dettagli per match ID ${match.id}:`, error.message);
+                                // Non lanciare errori qui per non fermare l'esecuzione
+                            }
+                        }
+                    })
+                );
             })
         );
+        if (totalRefresh > 75) {
+            totalRefresh = 0
+        }
+
         return liveMatches;
     } catch (error) {
         console.error('Errore nella funzione uploadLiveMatches:', error.message);
