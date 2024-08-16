@@ -15,7 +15,7 @@ const uploadLiveMatches = async () => {
     try {
         const formattedDate = getFormattedDate();
         const response = await axios.get(`${API_URL}matches?date=${formattedDate}&timezone=Europe%2FRome&${INFO}`);
-        liveMatches = response.data.leagues;
+        liveMatches = response.data.leagues.filter(league => arrayLeagues.includes(league.id));
 
         // Usare Promise.all per gestire le richieste asincrone
         await Promise.all(
@@ -35,7 +35,7 @@ const uploadLiveMatches = async () => {
                 }
             })
         );
-        return liveMatches.filter(league => arrayLeagues.includes(league.id));
+        return liveMatches;
     } catch (error) {
         console.error('Errore nella funzione uploadLiveMatches:', error.message);
         // Non lanciare errori qui per non fermare l'esecuzione
