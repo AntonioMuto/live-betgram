@@ -15,24 +15,27 @@ const uploadLiveMatches = async () => {
     try {
         const formattedDate = getFormattedDate();
         const response = await axios.get(`${API_URL}matches?date=${formattedDate}&timezone=Europe%2FRome&${INFO}`);
-        liveMatches = response.data.leagues.filter(league => arrayLeagues.includes(league.id));
+        liveMatches = response.data.leagues;
+        // liveMatches = response.data.leagues.filter(league => arrayLeagues.includes(league.id));
 
         // Usare Promise.all per gestire le richieste asincrone
         await Promise.all(
             liveMatches.map(async league => {
-                if (arrayLeagues.includes(league.id)) {
+                // if (arrayLeagues.includes(league.id)) {
                     await Promise.all(
                         league.matches.map(async match => {
-                            try {
-                                const matchDetailsResponse = await axios.get(`${API_URL}matchDetails?matchId=${match.id}&${INFO}`);
-                                matchesDetails.set(match.id, matchDetailsResponse.data);
-                            } catch (error) {
-                                console.error(`Errore nel recupero dei dettagli per match ID ${match.id}:`, error.message);
-                                // Non lanciare errori qui per non fermare l'esecuzione
+                            if (match.status && match.status.ongoing === true) {
+                                try {
+                                    const matchDetailsResponse = await axios.get(`${API_URL}matchDetails?matchId=${match.id}&${INFO}`);
+                                    matchesDetails.set(match.id, matchDetailsResponse.data);
+                                } catch (error) {
+                                    console.error(`Errore nel recupero dei dettagli per match ID ${match.id}:`, error.message);
+                                    // Non lanciare errori qui per non fermare l'esecuzione
+                                }
                             }
                         })
                     );
-                }
+                // }
             })
         );
         return liveMatches;
