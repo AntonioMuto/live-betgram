@@ -6,7 +6,7 @@ const axios = require('axios');
 const API_URL = process.env.API_URL;
 const INFO = process.env.INFO;
 
-const arrayLeagues = [55,86,47,53,54,87,57,61]
+const arrayLeagues = [55, 86, 47, 53, 54, 87, 57, 61]
 
 var liveMatches = [];
 var matchesDetails = new Map();
@@ -20,17 +20,19 @@ const uploadLiveMatches = async () => {
         // Usare Promise.all per gestire le richieste asincrone
         await Promise.all(
             liveMatches.map(async league => {
-                await Promise.all(
-                    league.matches.map(async match => {
-                        try {
-                            const matchDetailsResponse = await axios.get(`${API_URL}matchDetails?matchId=${match.id}&${INFO}`);
-                            matchesDetails.set(match.id, matchDetailsResponse.data);
-                        } catch (error) {
-                            console.error(`Errore nel recupero dei dettagli per match ID ${match.id}:`, error.message);
-                            // Non lanciare errori qui per non fermare l'esecuzione
-                        }
-                    })
-                );
+                if (arrayLeagues.includes(league.id)) {
+                    await Promise.all(
+                        league.matches.map(async match => {
+                            try {
+                                const matchDetailsResponse = await axios.get(`${API_URL}matchDetails?matchId=${match.id}&${INFO}`);
+                                matchesDetails.set(match.id, matchDetailsResponse.data);
+                            } catch (error) {
+                                console.error(`Errore nel recupero dei dettagli per match ID ${match.id}:`, error.message);
+                                // Non lanciare errori qui per non fermare l'esecuzione
+                            }
+                        })
+                    );
+                }
             })
         );
         return liveMatches;
