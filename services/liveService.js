@@ -35,7 +35,7 @@ const uploadLiveMatches = async () => {
                 }
             })
         );
-        return liveMatches;
+        return liveMatches.filter(league => arrayLeagues.includes(league.id));
     } catch (error) {
         console.error('Errore nella funzione uploadLiveMatches:', error.message);
         // Non lanciare errori qui per non fermare l'esecuzione
