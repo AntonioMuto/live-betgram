@@ -89,9 +89,18 @@ const getLiveMatch = async (matchId) => {
         return null;  // Assicurati di restituire un valore di fallback
     }
 };
+const clearLiveMatch = async () => {
+    try {
+        matchesDetails.clear();
+    } catch (error) {
+        console.error('Errore nella funzione getLiveMatch:', error.message);
+        return null;  // Assicurati di restituire un valore di fallback
+    }
+};
 
 module.exports = {
     getLiveMatchesSaved,
     uploadLiveMatches,
-    getLiveMatch
+    getLiveMatch,
+    clearLiveMatch
 };

@@ -58,8 +58,14 @@ cron.schedule('0 2 */3 * *', () => {
     timezone: "Europe/Rome"
 });
 
-cron.schedule('*/20 * * * * *', async () => {
+cron.schedule('* * 3 * * *', async () => {
     await liveController.uploadLive();
+}, {
+    timezone: "Europe/Rome"
+});
+
+cron.schedule('0 0 4 * * *', async () => {
+    await liveController.clearLiveMatch();
 }, {
     timezone: "Europe/Rome"
 });
