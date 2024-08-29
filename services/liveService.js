@@ -91,6 +91,7 @@ const getLiveMatch = async (matchId) => {
 };
 const clearLiveMatch = async () => {
     try {
+        totalRefresh = 0;
         matchesDetails.clear();
     } catch (error) {
         console.error('Errore nella funzione getLiveMatch:', error.message);
