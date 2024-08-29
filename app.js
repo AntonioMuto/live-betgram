@@ -58,7 +58,7 @@ cron.schedule('0 2 */3 * *', () => {
     timezone: "Europe/Rome"
 });
 
-cron.schedule('* * 3 * * *', async () => {
+cron.schedule('*/20 * * * * *', async () => {
     await liveController.uploadLive();
 }, {
     timezone: "Europe/Rome"
